@@ -82,6 +82,11 @@
 			<artifactId>minio</artifactId>
 			<version>8.5.7</version>
 		</dependency>
+		<dependency>
+			<groupId>io.github.binance</groupId>
+			<artifactId>binance-connector-java</artifactId>
+			<version>3.3.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

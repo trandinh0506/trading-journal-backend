@@ -3,7 +3,6 @@ package com.trader.journal_backend.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,6 @@ public class TradeService {
             trade = tradeRepository.save(trade);
         }
 
-        // 2. Tạo lệnh con (Order)
         Order order = new Order();
         order.setTrade(trade);
         order.setPrice(dto.getPrice());
@@ -49,23 +47,32 @@ public class TradeService {
 
     private void updateTradeSummary(Trade trade) {
         List<Order> orders = orderRepository.findByTradeId(trade.getId());
-        
-        BigDecimal totalValue = orders.stream()
-            .map(o -> o.getPrice().multiply(o.getVolume()))
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal totalVol = orders.stream()
-            .map(Order::getVolume)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-            
-        trade.setAverageEntryPrice(totalValue.divide(totalVol, 8, RoundingMode.HALF_UP));
-        trade.setTotalVolume(totalVol);
+        if (orders.isEmpty()) return;
+
+        BigDecimal totalValue = BigDecimal.ZERO;
+        BigDecimal totalVol = BigDecimal.ZERO;
+
+        for (Order o : orders) {
+            totalValue = totalValue.add(o.getPrice().multiply(o.getVolume()));
+            totalVol = totalVol.add(o.getVolume());
+        }
+
+        if (totalVol.compareTo(BigDecimal.ZERO) > 0) {
+            trade.setAverageEntryPrice(totalValue.divide(totalVol, 8, RoundingMode.HALF_UP));
+            trade.setTotalVolume(totalVol);
+        }
 
         BigDecimal firstSl = orders.get(0).getSl();
-        boolean allSlSame = orders.stream().allMatch(o -> Objects.equals(o.getSl(), firstSl));
+        boolean allSlSame = orders.stream()
+            .allMatch(o -> (o.getSl() == null && firstSl == null) || 
+                        (o.getSl() != null && firstSl != null && o.getSl().compareTo(firstSl) == 0));
         trade.setCurrentSl(allSlSame ? firstSl : null);
 
         BigDecimal firstTp = orders.get(0).getTp();
-        boolean allTpSame = orders.stream().allMatch(o -> Objects.equals(o.getTp(), firstTp));
+        boolean allTpSame = orders.stream()
+            .allMatch(o -> (o.getTp() == null && firstTp == null) || 
+                        (o.getTp() != null && firstTp != null && o.getTp().compareTo(firstTp) == 0));
         trade.setCurrentTp(allTpSame ? firstTp : null);
+        
     }
 }

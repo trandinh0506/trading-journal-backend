@@ -7,19 +7,22 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.trader.journal_backend.model.enums.ExchangePlatform;
+
 @Service
 public class ExchangeFactory {
-    private final Map<String, ExchangeProvider> providers = new HashMap<>();
+    private final Map<ExchangePlatform, ExchangeProvider> providers = new HashMap<>();
 
     @Autowired
     public ExchangeFactory(List<ExchangeProvider> providerList) {
-        providerList.forEach(p -> providers.put(p.getExchangeName().toUpperCase(), p));
+        providerList.forEach(p -> providers.put(p.getExchange(), p));
     }
 
-    public ExchangeProvider getProvider(String exchangeName) {
-        ExchangeProvider provider = providers.get(exchangeName.toUpperCase());
+    // Nhận trực tiếp Enum làm tham số
+    public ExchangeProvider getProvider(ExchangePlatform platform) {
+        ExchangeProvider provider = providers.get(platform);
         if (provider == null) {
-            throw new RuntimeException("Exchange " + exchangeName + " is not supported!");
+            throw new RuntimeException("Exchange " + platform + " is not supported yet!");
         }
         return provider;
     }

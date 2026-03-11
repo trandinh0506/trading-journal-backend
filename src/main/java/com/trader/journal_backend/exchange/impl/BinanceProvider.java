@@ -133,4 +133,21 @@ public class BinanceProvider extends AbstractExchangeProvider {
     public void startRealtimeListener(String apiKey, String secretKey, List<String> symbols, MarketType marketType) {
         log.info("REALTIME_LISTENER_START | Symbols: {} | Market: {}", symbols, marketType);
     }
+
+    @Override
+    public boolean testConnection(String apiKey, String secretKey, MarketType marketType) {
+        try {
+            if (marketType == MarketType.SPOT) {
+                SpotClientImpl client = new SpotClientImpl(apiKey, secretKey);
+                client.createTrade().account(new LinkedHashMap<>()); 
+            } else {
+                new UMFuturesClientImpl(apiKey, secretKey).account().accountInformation(new LinkedHashMap<>());
+            }
+            log.info("BINANCE_TEST_CONNECTION_SUCCESS | Market: {}", marketType);
+            return true;
+        } catch (Exception e) {
+            log.error("BINANCE_TEST_CONNECTION_FAILED | Market: {} | Error: {}", marketType, e.getMessage());
+            return false;
+        }
+}
 }

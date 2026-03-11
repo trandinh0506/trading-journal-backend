@@ -16,4 +16,6 @@ public interface ExchangeProvider {
     List<OrderDTO> fetchTradeHistory(String apiKey, String secretKey, String symbol, MarketType marketType, Long startTime);
 
     void startRealtimeListener(String apiKey, String secretKey, List<String> symbols, MarketType marketType);
+
+    boolean testConnection(String apiKey, String secretKey, MarketType marketType);
 }

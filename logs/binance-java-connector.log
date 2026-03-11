@@ -1,111 +1,20 @@
-2026-03-07 10:13:19.804[1772853199804] | INFO  | background-preinit | o.h.validator.internal.util.Version  - HV000001: Hibernate Validator 9.0.1.Final
-2026-03-07 10:13:19.844[1772853199844] | INFO  | main       | c.t.j.JournalBackendApplication      - Starting JournalBackendApplication using Java 21.0.9 with PID 15818 (/projects/journal-backend/target/classes started by dinhtv in /projects/journal-backend)
-2026-03-07 10:13:19.845[1772853199845] | INFO  | main       | c.t.j.JournalBackendApplication      - No active profile set, falling back to 1 default profile: "default"
-2026-03-07 10:13:20.262[1772853200262] | INFO  | main       | o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-07 10:13:20.300[1772853200300] | INFO  | main       | o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 32 ms. Found 3 JPA repository interfaces.
-2026-03-07 10:13:20.646[1772853200646] | INFO  | main       | o.s.boot.tomcat.TomcatWebServer      - Tomcat initialized with port 8080 (http)
-2026-03-07 10:13:20.655[1772853200655] | INFO  | main       | o.a.coyote.http11.Http11NioProtocol  - Initializing ProtocolHandler ["http-nio-8080"]
-2026-03-07 10:13:20.657[1772853200657] | INFO  | main       | o.a.catalina.core.StandardService    - Starting service [Tomcat]
-2026-03-07 10:13:20.657[1772853200657] | INFO  | main       | o.a.catalina.core.StandardEngine     - Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-03-07 10:13:20.704[1772853200704] | INFO  | main       | o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 833 ms
-2026-03-07 10:13:20.813[1772853200813] | INFO  | main       | org.hibernate.orm.jpa                - HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-03-07 10:13:20.857[1772853200857] | INFO  | main       | org.hibernate.orm.core               - HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-03-07 10:13:21.141[1772853201141] | INFO  | main       | o.s.o.j.p.SpringPersistenceUnitInfo  - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-03-07 10:13:21.165[1772853201165] | INFO  | main       | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Starting...
-2026-03-07 10:13:22.199[1772853202199] | WARN  | main       | org.hibernate.orm.jdbc.error         - HHH000247: ErrorCode: 0, SQLState: 08001
-2026-03-07 10:13:22.200[1772853202200] | WARN  | main       | org.hibernate.orm.jdbc.error         - Connection to localhost:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
-2026-03-07 10:13:22.206[1772853202206] | WARN  | main       | org.hibernate.orm.jdbc               - HHH100046: Could not obtain connection to query JDBC database metadata
-org.hibernate.exception.JDBCConnectionException: Unable to obtain isolated JDBC connection [Connection to localhost:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.] [n/a]
-	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:80)
-	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:34)
-	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:115)
-	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:101)
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:51)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:366)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironment(JdbcEnvironmentInitiator.java:143)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:120)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:80)
-	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:133)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:260)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:235)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:212)
-	at org.hibernate.boot.model.relational.Database.<init>(Database.java:44)
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:251)
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:203)
-	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:170)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1392)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.populateSessionFactoryBuilder(EntityManagerFactoryBuilderImpl.java:1472)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1454)
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:433)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:416)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:409)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1864)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1813)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:976)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:620)
-	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
-	at com.trader.journal_backend.JournalBackendApplication.main(JournalBackendApplication.java:10)
-Caused by: org.postgresql.util.PSQLException: Connection to localhost:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:373)
-	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57)
-	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:290)
-	at org.postgresql.Driver.makeConnection(Driver.java:448)
-	at org.postgresql.Driver.connect(Driver.java:298)
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373)
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210)
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:576)
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:97)
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111)
-	at org.hibernate.engine.jdbc.connections.internal.DataSourceConnectionProvider.getConnection(DataSourceConnectionProvider.java:137)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:508)
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:48)
-	... 37 common frames omitted
-Caused by: java.net.ConnectException: Connection refused
-	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:751)
-	at org.postgresql.core.PGStream.createSocket(PGStream.java:261)
-	at org.postgresql.core.PGStream.<init>(PGStream.java:122)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289)
-	... 51 common frames omitted
-2026-03-07 10:13:22.212[1772853202212] | ERROR | main       | o.s.o.j.LocalContainerEntityManagerFactoryBean - Failed to initialize JPA EntityManagerFactory: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
-2026-03-07 10:13:22.212[1772853202212] | WARN  | main       | o.s.b.w.s.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
-2026-03-07 10:42:52.795[1772854972795] | INFO  | background-preinit | o.h.validator.internal.util.Version  - HV000001: Hibernate Validator 9.0.1.Final
-2026-03-07 10:42:52.826[1772854972826] | INFO  | main       | c.t.j.JournalBackendApplication      - Starting JournalBackendApplication using Java 21.0.9 with PID 24418 (/projects/journal-backend/target/classes started by dinhtv in /projects/journal-backend)
-2026-03-07 10:42:52.827[1772854972827] | INFO  | main       | c.t.j.JournalBackendApplication      - No active profile set, falling back to 1 default profile: "default"
-2026-03-07 10:42:53.198[1772854973198] | INFO  | main       | o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-07 10:42:53.234[1772854973234] | INFO  | main       | o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 30 ms. Found 4 JPA repository interfaces.
-2026-03-07 10:42:53.557[1772854973557] | INFO  | main       | o.s.boot.tomcat.TomcatWebServer      - Tomcat initialized with port 8080 (http)
-2026-03-07 10:42:53.564[1772854973564] | INFO  | main       | o.a.coyote.http11.Http11NioProtocol  - Initializing ProtocolHandler ["http-nio-8080"]
-2026-03-07 10:42:53.567[1772854973567] | INFO  | main       | o.a.catalina.core.StandardService    - Starting service [Tomcat]
-2026-03-07 10:42:53.567[1772854973567] | INFO  | main       | o.a.catalina.core.StandardEngine     - Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-03-07 10:42:53.598[1772854973598] | INFO  | main       | o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 742 ms
-2026-03-07 10:42:53.697[1772854973697] | INFO  | main       | org.hibernate.orm.jpa                - HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-03-07 10:42:53.723[1772854973723] | INFO  | main       | org.hibernate.orm.core               - HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-03-07 10:42:53.958[1772854973958] | INFO  | main       | o.s.o.j.p.SpringPersistenceUnitInfo  - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-03-07 10:42:53.977[1772854973977] | INFO  | main       | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Starting...
-2026-03-07 10:42:54.077[1772854974077] | INFO  | main       | com.zaxxer.hikari.pool.HikariPool    - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4746fb8c
-2026-03-07 10:42:54.078[1772854974078] | INFO  | main       | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Start completed.
-2026-03-07 10:42:54.129[1772854974129] | INFO  | main       | o.hibernate.orm.connections.pooling  - HHH10001005: Database info:
+2026-03-11 09:56:03.708[1773197763708] | INFO  | background-preinit | o.h.validator.internal.util.Version  - HV000001: Hibernate Validator 9.0.1.Final
+2026-03-11 09:56:03.749[1773197763749] | INFO  | main       | c.t.j.JournalBackendApplication      - Starting JournalBackendApplication using Java 21.0.9 with PID 5340 (/projects/journal-backend/target/classes started by dinhtv in /projects/journal-backend)
+2026-03-11 09:56:03.750[1773197763750] | INFO  | main       | c.t.j.JournalBackendApplication      - No active profile set, falling back to 1 default profile: "default"
+2026-03-11 09:56:04.169[1773197764169] | INFO  | main       | o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-11 09:56:04.208[1773197764208] | INFO  | main       | o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 33 ms. Found 4 JPA repository interfaces.
+2026-03-11 09:56:04.580[1773197764580] | INFO  | main       | o.s.boot.tomcat.TomcatWebServer      - Tomcat initialized with port 8080 (http)
+2026-03-11 09:56:04.588[1773197764588] | INFO  | main       | o.a.coyote.http11.Http11NioProtocol  - Initializing ProtocolHandler ["http-nio-8080"]
+2026-03-11 09:56:04.590[1773197764590] | INFO  | main       | o.a.catalina.core.StandardService    - Starting service [Tomcat]
+2026-03-11 09:56:04.590[1773197764590] | INFO  | main       | o.a.catalina.core.StandardEngine     - Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-03-11 09:56:04.634[1773197764634] | INFO  | main       | o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 852 ms
+2026-03-11 09:56:04.747[1773197764747] | INFO  | main       | org.hibernate.orm.jpa                - HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-03-11 09:56:04.794[1773197764794] | INFO  | main       | org.hibernate.orm.core               - HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-03-11 09:56:05.102[1773197765102] | INFO  | main       | o.s.o.j.p.SpringPersistenceUnitInfo  - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-11 09:56:05.126[1773197765126] | INFO  | main       | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Starting...
+2026-03-11 09:56:05.245[1773197765245] | INFO  | main       | com.zaxxer.hikari.pool.HikariPool    - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@41d877bb
+2026-03-11 09:56:05.246[1773197765246] | INFO  | main       | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Start completed.
+2026-03-11 09:56:05.305[1773197765305] | INFO  | main       | o.hibernate.orm.connections.pooling  - HHH10001005: Database info:
 	Database JDBC URL [jdbc:postgresql://localhost:5432/journal]
 	Database driver: PostgreSQL JDBC Driver
 	Database dialect: PostgreSQLDialect
@@ -117,89 +26,23 @@ Caused by: java.net.ConnectException: Connection refused
 	Pool: DataSourceConnectionProvider
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-03-07 10:42:54.844[1772854974844] | INFO  | main       | org.hibernate.orm.core               - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-03-07 10:42:54.920[1772854974920] | INFO  | main       | o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-03-07 10:42:54.980[1772854974980] | INFO  | main       | o.s.d.j.r.q.QueryEnhancerFactories   - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-03-07 10:42:55.303[1772854975303] | WARN  | main       | o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-03-07 10:42:55.363[1772854975363] | WARN  | main       | o.s.b.s.a.UserDetailsServiceAutoConfiguration - 
+2026-03-11 09:56:06.041[1773197766041] | INFO  | main       | org.hibernate.orm.core               - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-11 09:56:06.109[1773197766109] | INFO  | main       | o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-11 09:56:06.168[1773197766168] | INFO  | main       | o.s.d.j.r.q.QueryEnhancerFactories   - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-11 09:56:06.499[1773197766499] | WARN  | main       | o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-11 09:56:06.562[1773197766562] | WARN  | main       | o.s.b.s.a.UserDetailsServiceAutoConfiguration - 
 
-Using generated security password: b29c69bc-81e2-4428-be75-4af737e224b0
-
-This generated password is for development use only. Your security configuration must be updated before running your application in production.
-
-2026-03-07 10:42:55.368[1772854975368] | INFO  | main       | o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
-2026-03-07 10:42:55.662[1772854975662] | INFO  | main       | o.a.coyote.http11.Http11NioProtocol  - Starting ProtocolHandler ["http-nio-8080"]
-2026-03-07 10:42:55.670[1772854975670] | INFO  | main       | o.s.boot.tomcat.TomcatWebServer      - Tomcat started on port 8080 (http) with context path '/'
-2026-03-07 10:42:55.679[1772854975679] | INFO  | main       | c.t.j.JournalBackendApplication      - Started JournalBackendApplication in 3.05 seconds (process running for 3.36)
-2026-03-07 10:42:55.909[1772854975909] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Starting update symbols from exchanges...
-2026-03-07 10:42:55.909[1772854975909] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Getting symbols for BINANCE - SPOT
-2026-03-07 10:42:55.910[1772854975910] | INFO  | task-1     | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/exchangeInfo
-2026-03-07 10:42:57.259[1772854977259] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Added 1431 new symbols for BINANCE - SPOT
-2026-03-07 10:42:57.259[1772854977259] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Getting symbols for BINANCE - FUTURE
-2026-03-07 10:42:57.262[1772854977262] | INFO  | task-1     | c.b.c.f.client.utils.RequestHandler  - GET https://fapi.binance.com/fapi/v1/exchangeInfo
-2026-03-07 10:42:57.583[1772854977583] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Added 600 new symbols for BINANCE - FUTURE
-2026-03-07 10:42:57.584[1772854977584] | ERROR | task-1     | c.t.j.service.SymbolRegistryService  - Can not update symbol for exchange BYBIT: Exchange BYBIT is not supported yet!
-2026-03-07 10:42:57.584[1772854977584] | ERROR | task-1     | c.t.j.service.SymbolRegistryService  - Can not update symbol for exchange OKX: Exchange OKX is not supported yet!
-2026-03-07 10:42:57.584[1772854977584] | ERROR | task-1     | c.t.j.service.SymbolRegistryService  - Can not update symbol for exchange EXNESS: Exchange EXNESS is not supported yet!
-2026-03-07 10:49:53.964[1772855393964] | INFO  | SpringApplicationShutdownHook | o.s.boot.tomcat.GracefulShutdown     - Commencing graceful shutdown. Waiting for active requests to complete
-2026-03-07 10:49:53.967[1772855393967] | INFO  | tomcat-shutdown | o.s.boot.tomcat.GracefulShutdown     - Graceful shutdown complete
-2026-03-07 10:49:53.970[1772855393970] | INFO  | SpringApplicationShutdownHook | o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-03-07 10:49:53.972[1772855393972] | INFO  | SpringApplicationShutdownHook | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Shutdown initiated...
-2026-03-07 10:49:53.973[1772855393973] | INFO  | SpringApplicationShutdownHook | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Shutdown completed.
-2026-03-07 10:49:58.278[1772855398278] | INFO  | background-preinit | o.h.validator.internal.util.Version  - HV000001: Hibernate Validator 9.0.1.Final
-2026-03-07 10:49:58.309[1772855398309] | INFO  | main       | c.t.j.JournalBackendApplication      - Starting JournalBackendApplication using Java 21.0.9 with PID 28081 (/projects/journal-backend/target/classes started by dinhtv in /projects/journal-backend)
-2026-03-07 10:49:58.309[1772855398309] | INFO  | main       | c.t.j.JournalBackendApplication      - No active profile set, falling back to 1 default profile: "default"
-2026-03-07 10:49:58.677[1772855398677] | INFO  | main       | o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-07 10:49:58.710[1772855398710] | INFO  | main       | o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 28 ms. Found 4 JPA repository interfaces.
-2026-03-07 10:49:59.031[1772855399031] | INFO  | main       | o.s.boot.tomcat.TomcatWebServer      - Tomcat initialized with port 8080 (http)
-2026-03-07 10:49:59.039[1772855399039] | INFO  | main       | o.a.coyote.http11.Http11NioProtocol  - Initializing ProtocolHandler ["http-nio-8080"]
-2026-03-07 10:49:59.040[1772855399040] | INFO  | main       | o.a.catalina.core.StandardService    - Starting service [Tomcat]
-2026-03-07 10:49:59.041[1772855399041] | INFO  | main       | o.a.catalina.core.StandardEngine     - Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-03-07 10:49:59.071[1772855399071] | INFO  | main       | o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 732 ms
-2026-03-07 10:49:59.166[1772855399166] | INFO  | main       | org.hibernate.orm.jpa                - HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-03-07 10:49:59.193[1772855399193] | INFO  | main       | org.hibernate.orm.core               - HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-03-07 10:49:59.420[1772855399420] | INFO  | main       | o.s.o.j.p.SpringPersistenceUnitInfo  - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-03-07 10:49:59.439[1772855399439] | INFO  | main       | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Starting...
-2026-03-07 10:49:59.528[1772855399528] | INFO  | main       | com.zaxxer.hikari.pool.HikariPool    - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4746fb8c
-2026-03-07 10:49:59.529[1772855399529] | INFO  | main       | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Start completed.
-2026-03-07 10:49:59.568[1772855399568] | INFO  | main       | o.hibernate.orm.connections.pooling  - HHH10001005: Database info:
-	Database JDBC URL [jdbc:postgresql://localhost:5432/journal]
-	Database driver: PostgreSQL JDBC Driver
-	Database dialect: PostgreSQLDialect
-	Database version: 15.15
-	Default catalog/schema: journal/public
-	Autocommit mode: undefined/unknown
-	Isolation level: READ_COMMITTED [default READ_COMMITTED]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-03-07 10:50:00.208[1772855400208] | INFO  | main       | org.hibernate.orm.core               - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-03-07 10:50:00.259[1772855400259] | INFO  | main       | o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-03-07 10:50:00.314[1772855400314] | INFO  | main       | o.s.d.j.r.q.QueryEnhancerFactories   - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-03-07 10:50:00.601[1772855400601] | WARN  | main       | o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-03-07 10:50:00.660[1772855400660] | WARN  | main       | o.s.b.s.a.UserDetailsServiceAutoConfiguration - 
-
-Using generated security password: 89d78dc3-c70b-4407-ac04-0a17cb63af0c
+Using generated security password: 12cc6fbb-ffb4-41d4-ab99-b6e8f26b4798
 
 This generated password is for development use only. Your security configuration must be updated before running your application in production.
 
-2026-03-07 10:50:00.664[1772855400664] | INFO  | main       | o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
-2026-03-07 10:50:00.942[1772855400942] | INFO  | main       | o.a.coyote.http11.Http11NioProtocol  - Starting ProtocolHandler ["http-nio-8080"]
-2026-03-07 10:50:00.947[1772855400947] | INFO  | main       | o.s.boot.tomcat.TomcatWebServer      - Tomcat started on port 8080 (http) with context path '/'
-2026-03-07 10:50:00.956[1772855400956] | INFO  | main       | c.t.j.JournalBackendApplication      - Started JournalBackendApplication in 2.853 seconds (process running for 3.182)
-2026-03-07 10:50:01.181[1772855401181] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Starting update symbols from exchanges...
-2026-03-07 10:50:01.181[1772855401181] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Getting symbols for BINANCE - SPOT
-2026-03-07 10:50:01.183[1772855401183] | INFO  | task-1     | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/exchangeInfo
-2026-03-07 10:50:03.720[1772855403720] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Added 1431 new symbols for BINANCE - SPOT
-2026-03-07 10:50:03.721[1772855403721] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Getting symbols for BINANCE - FUTURE
-2026-03-07 10:50:03.723[1772855403723] | INFO  | task-1     | c.b.c.f.client.utils.RequestHandler  - GET https://fapi.binance.com/fapi/v1/exchangeInfo
-2026-03-07 10:50:04.015[1772855404015] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - Added 600 new symbols for BINANCE - FUTURE
-2026-03-07 10:50:04.015[1772855404015] | ERROR | task-1     | c.t.j.service.SymbolRegistryService  - Can not update symbol for exchange BYBIT: Exchange BYBIT is not supported yet!
-2026-03-07 10:50:04.015[1772855404015] | ERROR | task-1     | c.t.j.service.SymbolRegistryService  - Can not update symbol for exchange OKX: Exchange OKX is not supported yet!
-2026-03-07 10:50:04.015[1772855404015] | ERROR | task-1     | c.t.j.service.SymbolRegistryService  - Can not update symbol for exchange EXNESS: Exchange EXNESS is not supported yet!
-2026-03-07 11:05:54.912[1772856354912] | INFO  | SpringApplicationShutdownHook | o.s.boot.tomcat.GracefulShutdown     - Commencing graceful shutdown. Waiting for active requests to complete
-2026-03-07 11:05:54.916[1772856354916] | INFO  | tomcat-shutdown | o.s.boot.tomcat.GracefulShutdown     - Graceful shutdown complete
-2026-03-07 11:05:54.921[1772856354921] | INFO  | SpringApplicationShutdownHook | o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-03-07 11:05:54.923[1772856354923] | INFO  | SpringApplicationShutdownHook | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Shutdown initiated...
-2026-03-07 11:05:54.931[1772856354931] | INFO  | SpringApplicationShutdownHook | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Shutdown completed.
+2026-03-11 09:56:06.567[1773197766567] | INFO  | main       | o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-03-11 09:56:06.866[1773197766866] | INFO  | main       | o.a.coyote.http11.Http11NioProtocol  - Starting ProtocolHandler ["http-nio-8080"]
+2026-03-11 09:56:06.874[1773197766874] | INFO  | main       | o.s.boot.tomcat.TomcatWebServer      - Tomcat started on port 8080 (http) with context path '/'
+2026-03-11 09:56:06.884[1773197766884] | INFO  | main       | c.t.j.JournalBackendApplication      - Started JournalBackendApplication in 3.377 seconds (process running for 3.74)
+2026-03-11 09:56:07.120[1773197767120] | INFO  | task-1     | c.t.j.service.SymbolRegistryService  - DB has data for symbols skipping auto update symbols at start up.
+2026-03-11 10:01:36.130[1773198096130] | INFO  | SpringApplicationShutdownHook | o.s.boot.tomcat.GracefulShutdown     - Commencing graceful shutdown. Waiting for active requests to complete
+2026-03-11 10:01:36.133[1773198096133] | INFO  | tomcat-shutdown | o.s.boot.tomcat.GracefulShutdown     - Graceful shutdown complete
+2026-03-11 10:01:36.138[1773198096138] | INFO  | SpringApplicationShutdownHook | o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-11 10:01:36.141[1773198096141] | INFO  | SpringApplicationShutdownHook | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Shutdown initiated...
+2026-03-11 10:01:36.143[1773198096143] | INFO  | SpringApplicationShutdownHook | com.zaxxer.hikari.HikariDataSource   - HikariPool-1 - Shutdown completed.

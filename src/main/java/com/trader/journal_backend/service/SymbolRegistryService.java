@@ -40,7 +40,7 @@ public class SymbolRegistryService {
             try {
                 ExchangeProvider provider = exchangeFactory.getProvider(platform);
                 
-                for (MarketType marketType : List.of(MarketType.SPOT, MarketType.FUTURE)) {
+                for (MarketType marketType : List.of(MarketType.SPOT, MarketType.FUTURES)) {
                     syncSymbolsForPlatform(provider, marketType);
                 }
             } catch (Exception e) {

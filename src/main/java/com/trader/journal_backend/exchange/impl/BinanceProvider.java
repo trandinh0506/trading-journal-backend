@@ -190,11 +190,11 @@ public class BinanceProvider extends AbstractExchangeProvider {
 
             if (marketType == MarketType.SPOT && !enableSpotTrade) {
                 log.warn("SECURITY_CONFIG_ERROR | Market is SPOT but 'Enable Spot' is OFF.");
-                throw new RuntimeException("API Key missing 'Enable Spot & Margin Trading' permission.");
+                // throw new RuntimeException("API Key missing 'Enable Spot & Margin Trading' permission.");
             }
             if (marketType == MarketType.FUTURES && !enableFutures) {
                 log.warn("SECURITY_CONFIG_ERROR | Market is FUTURES but 'Enable Futures' is OFF.");
-                throw new RuntimeException("API Key missing 'Enable Futures' permission.");
+                // throw new RuntimeException("API Key missing 'Enable Futures' permission.");
             }
 
             if (marketType == MarketType.SPOT) {

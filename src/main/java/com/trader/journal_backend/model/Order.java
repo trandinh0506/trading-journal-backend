@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,13 +24,23 @@ public class Order {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "trade_id")
+    @JoinColumn(name = "trade_id", referencedColumnName = "id")
     @JsonBackReference
     private Trade trade;
 
-    private BigDecimal price;
-    private BigDecimal volume;
+    private String side;
+
     private BigDecimal sl;
     private BigDecimal tp;
+
+    private BigDecimal price;
+    private BigDecimal volume; 
+    private BigDecimal fee;
+    private String feeAsset;
+    private BigDecimal realizedPnl;
+    
+    @Column(unique = true)
+    private String externalOrderId;
+
     private LocalDateTime executedAt;
 }

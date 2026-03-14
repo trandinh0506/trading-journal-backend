@@ -1,0 +1,70 @@
+2026-03-13 13:11:09 [background-preinit] INFO  o.h.validator.internal.util.Version:18 - HV000001: Hibernate Validator 9.0.1.Final
+2026-03-13 13:11:09 [main] INFO  c.t.j.JournalBackendApplication:54 - Starting JournalBackendApplication using Java 21.0.9 with PID 28643 (/projects/journal-backend/target/classes started by dinhtv in /projects/journal-backend)
+2026-03-13 13:11:09 [main] INFO  c.t.j.JournalBackendApplication:652 - No active profile set, falling back to 1 default profile: "default"
+2026-03-13 13:11:09 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate:145 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-13 13:11:09 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate:213 - Finished Spring Data repository scanning in 33 ms. Found 6 JPA repository interfaces.
+2026-03-13 13:11:10 [main] INFO  o.s.boot.tomcat.TomcatWebServer:114 - Tomcat initialized with port 8080 (http)
+2026-03-13 13:11:10 [main] INFO  o.a.coyote.http11.Http11NioProtocol:168 - Initializing ProtocolHandler ["http-nio-8080"]
+2026-03-13 13:11:10 [main] INFO  o.a.catalina.core.StandardService:168 - Starting service [Tomcat]
+2026-03-13 13:11:10 [main] INFO  o.a.catalina.core.StandardEngine:168 - Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-03-13 13:11:10 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer:77 - Root WebApplicationContext: initialization completed in 806 ms
+2026-03-13 13:11:10 [main] INFO  org.hibernate.orm.jpa:102 - HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-03-13 13:11:10 [main] INFO  org.hibernate.orm.core:41 - HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-03-13 13:11:10 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo:128 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-13 13:11:10 [main] INFO  com.zaxxer.hikari.HikariDataSource:109 - HikariPool-1 - Starting...
+2026-03-13 13:11:10 [main] INFO  com.zaxxer.hikari.pool.HikariPool:580 - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6f9a3325
+2026-03-13 13:11:10 [main] INFO  com.zaxxer.hikari.HikariDataSource:122 - HikariPool-1 - Start completed.
+2026-03-13 13:11:10 [main] INFO  o.hibernate.orm.connections.pooling:179 - HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/journal]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 15.15
+	Default catalog/schema: journal/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-13 13:11:11 [main] INFO  org.hibernate.orm.core:53 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-13 13:11:11 [main] WARN  org.hibernate.orm.jdbc.warn:250 - HHH000247: ErrorCode: 0, SQLState: 00000
+2026-03-13 13:11:11 [main] WARN  org.hibernate.orm.jdbc.warn:251 - constraint "ukl7egxti250iwgalnsqujgc3de" of relation "trading_orders" does not exist, skipping
+2026-03-13 13:11:11 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean:444 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-13 13:11:11 [main] INFO  o.s.d.j.r.q.QueryEnhancerFactories:48 - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-13 13:11:11 [main] INFO  c.t.j.service.EncryptionService:27 - ENCRYPTION_SERVICE_READY | Algorithm: AES
+2026-03-13 13:11:12 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration:247 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-13 13:11:12 [main] WARN  o.s.b.s.a.UserDetailsServiceAutoConfiguration:83 - 
+
+Using generated security password: 383c4368-ee4f-48f8-a703-2a94a4f45d80
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-03-13 13:11:12 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer:110 - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-03-13 13:11:12 [main] INFO  o.a.coyote.http11.Http11NioProtocol:168 - Starting ProtocolHandler ["http-nio-8080"]
+2026-03-13 13:11:12 [main] INFO  o.s.boot.tomcat.TomcatWebServer:240 - Tomcat started on port 8080 (http) with context path '/'
+2026-03-13 13:11:12 [main] INFO  c.t.j.JournalBackendApplication:60 - Started JournalBackendApplication in 3.56 seconds (process running for 3.88)
+2026-03-13 13:11:12 [main] INFO  c.t.j.config.UserInitializer:29 - USER_INIT | Default user already exists. Skipping.
+2026-03-13 13:11:12 [task-1] INFO  c.t.j.service.SymbolRegistryService:33 - DB has data for symbols skipping auto update symbols at start up.
+2026-03-13 13:11:22 [tomcat-handler-0] INFO  o.a.c.c.C.[Tomcat].[localhost].[/]:168 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-13 13:11:22 [tomcat-handler-0] INFO  o.s.web.servlet.DispatcherServlet:523 - Initializing Servlet 'dispatcherServlet'
+2026-03-13 13:11:22 [tomcat-handler-0] INFO  o.s.web.servlet.DispatcherServlet:545 - Completed initialization in 1 ms
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeSyncService:35 - SYNC_START | Platform: BINANCE | Symbol: ETHUSDT | From: BEGINNING
+2026-03-13 13:11:29 [tomcat-handler-1] DEBUG c.t.j.exchange.impl.BinanceProvider:86 - FETCH_HISTORY | Symbol: ETHUSDT | Market: FUTURES | From: null
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.b.c.f.client.utils.RequestHandler:43 - GET https://fapi.binance.com/fapi/v1/userTrades?symbol=ETHUSDT&timestamp=1773382289333&signature=df84466b68c7ac6d084f0b4f7e7b9281b3b6187ed416af9fe6212981e895418f
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeSyncService:46 - SYNC_FETCHED | Received 3 orders from BINANCE
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:50 - TRADE_CREATE | No open position found. Creating new Trade for BUY ETHUSDT
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:60 - ORDER_ATTACH | Order 7768079217 -> Trade ID: 1
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:75 - TRADE_UPDATED | ID: 1 | Status: OPEN | TotalVol: 0.010
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:44 - TRADE_CLOSE_ACTION | Found opposite open trade ID: 1 for SELL ETHUSDT
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:60 - ORDER_ATTACH | Order 7768085284 -> Trade ID: 1
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:75 - TRADE_UPDATED | ID: 1 | Status: OPEN | TotalVol: 0.006
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:44 - TRADE_CLOSE_ACTION | Found opposite open trade ID: 1 for SELL ETHUSDT
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:60 - ORDER_ATTACH | Order 7768085285 -> Trade ID: 1
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:111 - TRADE_COMPLETED | Trade ID: 1 fully closed
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeService:75 - TRADE_UPDATED | ID: 1 | Status: CLOSED | TotalVol: 0.000
+2026-03-13 13:11:29 [tomcat-handler-1] INFO  c.t.j.service.TradeSyncService:54 - SYNC_COMPLETE | Symbol: ETHUSDT | Added: 3 | Duration: 551ms
+2026-03-13 13:33:27 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown:54 - Commencing graceful shutdown. Waiting for active requests to complete
+2026-03-13 13:33:27 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown:76 - Graceful shutdown complete
+2026-03-13 13:33:27 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean:667 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-13 13:33:27 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource:349 - HikariPool-1 - Shutdown initiated...
+2026-03-13 13:33:27 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource:351 - HikariPool-1 - Shutdown completed.

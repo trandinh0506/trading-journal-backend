@@ -1,17 +1,19 @@
 package com.trader.journal_backend.controller;
 
 import com.trader.journal_backend.dto.OrderDTO;
+import com.trader.journal_backend.dto.TradeResponseDTO;
 import com.trader.journal_backend.model.Trade;
 import com.trader.journal_backend.model.UserExchangeConnection;
 import com.trader.journal_backend.repository.TradeRepository;
 import com.trader.journal_backend.repository.UserExchangeConnectionRepository;
 import com.trader.journal_backend.service.TradeService;
-import com.trader.journal_backend.service.TradeSyncService; // Service gọi API sàn
+import com.trader.journal_backend.service.TradeSyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/trades")
@@ -24,20 +26,23 @@ public class TradeController {
     private final UserExchangeConnectionRepository connectionRepository;
 
     @GetMapping
-    public List<Trade> getAllTrades() {
-        return tradeRepository.findAll();
+    public List<TradeResponseDTO> getAllTrades() {
+        return tradeRepository.findAll().stream()
+                .map(tradeService::convertToResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/order")
-    public ResponseEntity<Trade> processOrder(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<TradeResponseDTO> processOrder(@RequestBody OrderDTO orderDTO) {
         Trade updatedTrade = tradeService.processNewOrder(orderDTO);
-        return ResponseEntity.ok(updatedTrade);
+        if (updatedTrade == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(tradeService.convertToResponseDTO(updatedTrade));
     }
 
-    // Endpoint "Cố đấm ăn xôi" để sync trực tiếp từ sàn vào Database
     @PostMapping("/sync/{symbol}")
     public ResponseEntity<String> syncFromExchange(@PathVariable String symbol) {
-        // 1. Tìm kết nối của User 1
         UserExchangeConnection conn = connectionRepository.findByUserIdAndIsActiveTrue(1L).stream()
                 .filter(c -> c.getMarketType().name().contains("FUTURES"))
                 .findFirst()
@@ -49,9 +54,17 @@ public class TradeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Trade> getTradeById(@PathVariable Long id) {
+    public ResponseEntity<TradeResponseDTO> getTradeById(@PathVariable Long id) {
         return tradeRepository.findById(id)
-                .map(ResponseEntity::ok)
+                .map(trade -> ResponseEntity.ok(tradeService.convertToResponseDTO(trade)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/recalculate")
+    public ResponseEntity<String> recalculateAll() {
+        List<Trade> allTrades = tradeRepository.findAll();
+        allTrades.forEach(tradeService::updateTradeSummary);
+        tradeRepository.saveAll(allTrades);
+        return ResponseEntity.ok("Recalculated " + allTrades.size() + " trades.");
     }
 }

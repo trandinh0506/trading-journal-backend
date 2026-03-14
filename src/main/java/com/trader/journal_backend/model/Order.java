@@ -33,10 +33,16 @@ public class Order {
     private BigDecimal sl;
     private BigDecimal tp;
 
+    @Column(precision = 18, scale = 8)
     private BigDecimal price;
+
+    @Column(precision = 18, scale = 8)
     private BigDecimal volume; 
+    
     private BigDecimal fee;
     private String feeAsset;
+
+    @Column(name = "realized_pnl", precision = 18, scale = 8)
     private BigDecimal realizedPnl;
     
     @Column(unique = true)

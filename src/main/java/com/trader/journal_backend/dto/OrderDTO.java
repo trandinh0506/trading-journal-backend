@@ -12,7 +12,7 @@ public class OrderDTO {
     
     private BigDecimal price;
     
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal volume;
     
     private BigDecimal sl;
@@ -27,4 +27,6 @@ public class OrderDTO {
     
     private BigDecimal commission;
     private String commissionAsset;
+    private BigDecimal realizedPnl;
+
 }

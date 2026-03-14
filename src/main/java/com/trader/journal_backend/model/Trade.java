@@ -22,8 +22,17 @@ public class Trade {
 
     private BigDecimal currentSl; 
     private BigDecimal currentTp;
-    
+
+    @Column(precision = 18, scale = 8)
     private BigDecimal averageEntryPrice;
+
+    @Column(precision = 18, scale = 8)
+    private BigDecimal totalExecutedVolume;
+    
+    @Column(precision = 18, scale = 8)
+    private BigDecimal totalEntryVolume;
+
+    @Column(name = "total_volume", precision = 18, scale = 8)
     private BigDecimal totalVolume;
     
     private String status;
@@ -32,7 +41,10 @@ public class Trade {
     @JsonManagedReference
     private List<Order> orders;
 
+    @Column(name = "total_realized_pnl", precision = 18, scale = 8)
     private BigDecimal totalRealizedPnl; 
+    
     private LocalDateTime openedAt;
     private LocalDateTime closedAt;
+
 }

@@ -121,6 +121,9 @@ public class BinanceProvider extends AbstractExchangeProvider {
 
             dto.setPrice(new BigDecimal(t.get("price").toString()));
             dto.setVolume(new BigDecimal(t.get("qty").toString()));
+            dto.setRealizedPnl(new BigDecimal(t.get("realizedPnl").toString()));
+            dto.setCommission(new BigDecimal(t.get("commission").toString()));
+            dto.setCommissionAsset(t.get("commissionAsset").toString());
             
             long ts = (long) t.get("time");
             dto.setExecutedAt(LocalDateTime.ofInstant(Instant.ofEpochMilli(ts), ZoneId.systemDefault()));

@@ -1,6 +1,8 @@
 package com.trader.journal_backend.service;
 
 import com.trader.journal_backend.dto.OrderDTO;
+import com.trader.journal_backend.dto.OrderResponseDTO;
+import com.trader.journal_backend.dto.TradeResponseDTO;
 import com.trader.journal_backend.model.Order;
 import com.trader.journal_backend.model.Trade;
 import com.trader.journal_backend.repository.OrderRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +36,7 @@ public class TradeService {
             return null; 
         }
 
-        // Strategy: Find an opposite OPEN trade to close/reduce position first
+        // Find an opposite OPEN trade to close/reduce position first
         // If current order is BUY, look for an OPEN SELL trade, and vice versa.
         String oppositeSide = dto.getSide().equalsIgnoreCase("BUY") ? "SELL" : "BUY";
         Optional<Trade> existingTrade = tradeRepository.findBySymbolAndSideAndStatus(dto.getSymbol(), oppositeSide, "OPEN");
@@ -63,6 +66,9 @@ public class TradeService {
         order.setSide(dto.getSide());
         order.setPrice(dto.getPrice());
         order.setVolume(dto.getVolume());
+        order.setRealizedPnl(dto.getRealizedPnl());
+        order.setFee(dto.getCommission()); 
+        order.setFeeAsset(dto.getCommissionAsset());
         order.setSl(dto.getSl());
         order.setTp(dto.getTp());
         order.setExternalOrderId(dto.getExternalOrderId());
@@ -78,51 +84,89 @@ public class TradeService {
         return tradeRepository.save(trade);
     }
 
-    private void updateTradeSummary(Trade trade) {
+    public void updateTradeSummary(Trade trade) {
         List<Order> orders = orderRepository.findByTradeId(trade.getId());
         if (orders.isEmpty()) return;
 
-        BigDecimal netVolume = BigDecimal.ZERO;
-        BigDecimal totalEntryValue = BigDecimal.ZERO;
-        BigDecimal entryVolume = BigDecimal.ZERO;
+        orders.sort(Comparator.comparing(Order::getExecutedAt));
+
+        BigDecimal currentVol = BigDecimal.ZERO;     
+        BigDecimal totalExecuted = BigDecimal.ZERO;  
+        BigDecimal entryVol = BigDecimal.ZERO;       
+        BigDecimal entryValue = BigDecimal.ZERO;     
+        BigDecimal totalPnL = BigDecimal.ZERO;
 
         for (Order o : orders) {
-            // Logic: If order side matches trade side -> Increase position
-            // If order side is opposite -> Decrease position
+            BigDecimal vol = o.getVolume();
+            totalExecuted = totalExecuted.add(vol);
+            
+            if (o.getRealizedPnl() != null) {
+                totalPnL = totalPnL.add(o.getRealizedPnl());
+            }
+
             if (o.getSide().equalsIgnoreCase(trade.getSide())) {
-                netVolume = netVolume.add(o.getVolume());
-                totalEntryValue = totalEntryValue.add(o.getPrice().multiply(o.getVolume()));
-                entryVolume = entryVolume.add(o.getVolume());
+                currentVol = currentVol.add(vol);
+                entryVol = entryVol.add(vol);
+                entryValue = entryValue.add(o.getPrice().multiply(vol));
             } else {
-                netVolume = netVolume.subtract(o.getVolume());
+                currentVol = currentVol.subtract(vol);
             }
         }
 
-        // Update Average Entry Price (only based on Entry orders)
-        if (entryVolume.compareTo(BigDecimal.ZERO) > 0) {
-            trade.setAverageEntryPrice(totalEntryValue.divide(entryVolume, 8, RoundingMode.HALF_UP));
-        }
-        
-        trade.setTotalVolume(netVolume);
+        trade.setTotalVolume(currentVol.stripTrailingZeros());
+        trade.setTotalExecutedVolume(totalExecuted.stripTrailingZeros());
+        trade.setTotalEntryVolume(entryVol.stripTrailingZeros());
+        trade.setTotalRealizedPnl(totalPnL.stripTrailingZeros());
 
-        // Check if position is fully closed
-        // Using a small threshold to handle potential floating point precision issues
-        if (netVolume.compareTo(new BigDecimal("0.00000001")) <= 0) {
-            log.info("TRADE_COMPLETED | Trade ID: {} fully closed", trade.getId());
+        if (entryVol.compareTo(BigDecimal.ZERO) > 0) {
+            trade.setAverageEntryPrice(entryValue.divide(entryVol, 8, RoundingMode.HALF_UP).stripTrailingZeros());
+        }
+
+        trade.setOpenedAt(orders.get(0).getExecutedAt());
+        if (currentVol.abs().compareTo(new BigDecimal("0.00000001")) <= 0) {
             trade.setStatus("CLOSED");
+            trade.setClosedAt(orders.get(orders.size() - 1).getExecutedAt());
+            trade.setTotalVolume(BigDecimal.ZERO); 
+        } else {
+            trade.setStatus("OPEN");
+            trade.setClosedAt(null);
         }
+    }
+    public TradeResponseDTO convertToResponseDTO(Trade trade) {
+        TradeResponseDTO dto = new TradeResponseDTO();
+        dto.setId(trade.getId());
+        dto.setSymbol(trade.getSymbol());
+        dto.setSide(trade.getSide());
+        dto.setStatus(trade.getStatus());
+        dto.setOpenedAt(trade.getOpenedAt());
+        dto.setClosedAt(trade.getClosedAt());
 
-        // Update SL/TP consistency
-        BigDecimal firstSl = orders.get(0).getSl();
-        boolean allSlSame = orders.stream()
-            .allMatch(o -> (o.getSl() == null && firstSl == null) || 
-                        (o.getSl() != null && firstSl != null && o.getSl().compareTo(firstSl) == 0));
-        trade.setCurrentSl(allSlSame ? firstSl : null);
+        dto.setAverageEntryPrice(format(trade.getAverageEntryPrice()));
+        dto.setTotalVolume(format(trade.getTotalVolume()));
+        dto.setTotalExecutedVolume(format(trade.getTotalExecutedVolume()));
+        dto.setTotalEntryVolume(format(trade.getTotalEntryVolume()));
+        dto.setTotalRealizedPnl(format(trade.getTotalRealizedPnl()));
 
-        BigDecimal firstTp = orders.get(0).getTp();
-        boolean allTpSame = orders.stream()
-            .allMatch(o -> (o.getTp() == null && firstTp == null) || 
-                        (o.getTp() != null && firstTp != null && o.getTp().compareTo(firstTp) == 0));
-        trade.setCurrentTp(allTpSame ? firstTp : null);
+        if (trade.getOrders() != null) {
+            dto.setOrders(trade.getOrders().stream().map(o -> {
+                OrderResponseDTO odto = new OrderResponseDTO();
+                odto.setId(o.getId());
+                odto.setSide(o.getSide());
+                odto.setPrice(format(o.getPrice()));
+                odto.setVolume(format(o.getVolume()));
+                odto.setRealizedPnl(format(o.getRealizedPnl()));
+                odto.setFee(format(o.getFee()));
+                odto.setFeeAsset(o.getFeeAsset());
+                odto.setExternalOrderId(o.getExternalOrderId());
+                odto.setExecutedAt(o.getExecutedAt());
+                return odto;
+            }).toList());
+        }
+        return dto;
+    }
+
+    private String format(BigDecimal value) {
+        if (value == null) return "0";
+        return value.stripTrailingZeros().toPlainString();
     }
 }

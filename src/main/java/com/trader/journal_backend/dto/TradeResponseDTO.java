@@ -16,6 +16,7 @@ public class TradeResponseDTO {
     private String totalExecutedVolume; 
     private String totalEntryVolume; 
     private String totalRealizedPnl;
+    private List<TradeImageResponseDTO> images;
     private LocalDateTime openedAt;
     private LocalDateTime closedAt;
     private List<OrderResponseDTO> orders;

@@ -43,6 +43,9 @@ public class Trade {
 
     @Column(name = "total_realized_pnl", precision = 18, scale = 8)
     private BigDecimal totalRealizedPnl; 
+
+    @OneToMany(mappedBy = "trade", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TradeImage> images;
     
     private LocalDateTime openedAt;
     private LocalDateTime closedAt;

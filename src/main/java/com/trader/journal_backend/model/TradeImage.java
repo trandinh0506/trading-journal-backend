@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "trade_images")
 @Data
@@ -14,11 +16,11 @@ public class TradeImage {
 
     @ManyToOne
     @JoinColumn(name = "trade_id")
+    @JsonBackReference
     private Trade trade;
 
     private String fileName;
     private String fileType;
-    private String url;
     
     private LocalDateTime uploadedAt = LocalDateTime.now();
 }

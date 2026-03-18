@@ -2,6 +2,7 @@ package com.trader.journal_backend.service;
 
 import com.trader.journal_backend.dto.OrderDTO;
 import com.trader.journal_backend.dto.OrderResponseDTO;
+import com.trader.journal_backend.dto.TradeImageResponseDTO;
 import com.trader.journal_backend.dto.TradeResponseDTO;
 import com.trader.journal_backend.model.Order;
 import com.trader.journal_backend.model.Trade;
@@ -17,6 +18,7 @@ import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,6 +26,7 @@ import java.util.Optional;
 public class TradeService {
     private final TradeRepository tradeRepository;
     private final OrderRepository orderRepository;
+    private final ImageService imageService;
 
     @Transactional
     public Trade processNewOrder(OrderDTO dto) {
@@ -162,6 +165,17 @@ public class TradeService {
                 return odto;
             }).toList());
         }
+
+        if (trade.getImages() != null && !trade.getImages().isEmpty()) {
+            List<TradeImageResponseDTO> imageDTOs = trade.getImages().stream()
+                .map(img -> new TradeImageResponseDTO(
+                    img.getFileType(), 
+                    imageService.generatePresignedUrl(img.getFileName())
+                ))
+                .collect(Collectors.toList());
+            dto.setImages(imageDTOs);
+        }
+
         return dto;
     }
 

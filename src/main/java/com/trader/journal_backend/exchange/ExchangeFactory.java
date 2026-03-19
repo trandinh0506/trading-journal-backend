@@ -18,7 +18,6 @@ public class ExchangeFactory {
         providerList.forEach(p -> providers.put(p.getExchange(), p));
     }
 
-    // Nhận trực tiếp Enum làm tham số
     public ExchangeProvider getProvider(ExchangePlatform platform) {
         ExchangeProvider provider = providers.get(platform);
         if (provider == null) {

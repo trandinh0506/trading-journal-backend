@@ -24,6 +24,8 @@ public class User {
     private String password;
 
     private String baseCurrency = "USDT";
+    
+    private String fullName;
 
     private boolean isAdmin = false; 
 

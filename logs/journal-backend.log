@@ -1,5 +1,0 @@
-2026-03-19 21:32:22 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown:54 - Commencing graceful shutdown. Waiting for active requests to complete
-2026-03-19 21:32:22 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown:76 - Graceful shutdown complete
-2026-03-19 21:32:22 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean:667 - Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-03-19 21:32:22 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource:349 - HikariPool-1 - Shutdown initiated...
-2026-03-19 21:32:22 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource:351 - HikariPool-1 - Shutdown completed.

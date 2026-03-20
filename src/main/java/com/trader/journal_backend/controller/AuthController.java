@@ -47,8 +47,8 @@ public class AuthController {
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             return ResponseEntity.ok(Map.of(
-                "accessToken", tokenResponse.getAccessToken(),
-                "user", Map.of("email", tokenResponse.getEmail(), "id", tokenResponse.getUserId())
+                "access_token", tokenResponse.getAccessToken(),
+                "user", Map.of("email", tokenResponse.getEmail(), "id", tokenResponse.getUserId(), "full_name", tokenResponse.getFullName())
             ));
         } else {
             return ResponseEntity.ok(tokenResponse);
@@ -76,7 +76,7 @@ public class AuthController {
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             return ResponseEntity.ok(Map.of(
-                "accessToken", tokenResponse.getAccessToken()
+                "access_token", tokenResponse.getAccessToken()
             ));
         }
 

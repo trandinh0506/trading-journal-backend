@@ -37,7 +37,7 @@ public class AuthService {
         String refreshToken = jwtUtils.generateRefreshToken(user.getEmail());
 
         log.info("AUTH_LOGIN_SUCCESS | User: {}", user.getEmail());
-        return new TokenResponse(accessToken, refreshToken, user.getId(), user.getEmail());
+        return new TokenResponse(accessToken, refreshToken, user.getId(), user.getEmail(), user.getFullName());
     }
 
     public TokenResponse refreshTokens(String refreshToken) {
@@ -56,7 +56,7 @@ public class AuthService {
         String newRefreshToken = jwtUtils.generateRefreshToken(email);
 
         log.info("AUTH_REFRESH_SUCCESS | Tokens rotated for: {}", email);
-        return new TokenResponse(newAccessToken, newRefreshToken, user.getId(), user.getEmail());
+        return new TokenResponse(newAccessToken, newRefreshToken, user.getId(), user.getEmail(), user.getFullName());
     }
 
     @Transactional

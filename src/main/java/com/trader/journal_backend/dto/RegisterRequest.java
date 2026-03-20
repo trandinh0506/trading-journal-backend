@@ -1,7 +1,6 @@
 package com.trader.journal_backend.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +9,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class RegisterRequest {
 
     @NotBlank(message = "Email can not be empty")
@@ -26,5 +24,6 @@ public class RegisterRequest {
     private String password;
 
     @NotBlank(message = "Full name cannot be empty")
+    @JsonProperty("full_name")
     private String fullName;
 }

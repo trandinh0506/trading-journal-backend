@@ -18,4 +18,8 @@ public interface ExchangeProvider {
     void startRealtimeListener(String apiKey, String secretKey, List<String> symbols, MarketType marketType);
 
     boolean testConnection(String apiKey, String secretKey, MarketType marketType);
+
+    boolean isSupported();
+    
+    List<MarketType> getSupportedMarketTypes();
 }

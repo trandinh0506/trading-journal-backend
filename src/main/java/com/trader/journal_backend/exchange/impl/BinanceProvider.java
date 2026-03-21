@@ -219,4 +219,13 @@ public class BinanceProvider extends AbstractExchangeProvider {
             return false;
         }
     }
+    @Override
+    public boolean isSupported() {
+        return true;
+    }
+
+    @Override
+    public List<MarketType> getSupportedMarketTypes() {
+        return List.of(MarketType.SPOT, MarketType.FUTURES);
+    }
 }

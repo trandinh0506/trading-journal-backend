@@ -1,5 +1,6 @@
 package com.trader.journal_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.trader.journal_backend.model.enums.ExchangePlatform;
 import com.trader.journal_backend.model.enums.MarketType;
 import jakarta.persistence.*;
@@ -24,15 +25,19 @@ public class UserExchangeConnection {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @JsonProperty("market_type")
     private MarketType marketType;
 
     @Column(name = "api_key", nullable = false)
+    @JsonProperty("api_key")
     private String apiKey;
 
     @Column(name = "api_secret", nullable = false)
+    @JsonProperty("api_secret")
     private String apiSecret;
 
     @Column(name = "is_active")
+    @JsonProperty("is_active")
     private boolean isActive = true;
 
     @Column(name = "last_sync_at")

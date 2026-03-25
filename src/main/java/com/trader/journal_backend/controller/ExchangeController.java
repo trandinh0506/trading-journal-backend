@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trader.journal_backend.dto.ExchangeSupportResponse;
 import com.trader.journal_backend.exchange.ExchangeFactory;
 import com.trader.journal_backend.model.ExchangeSymbol;
 import com.trader.journal_backend.model.enums.ExchangePlatform;
@@ -25,17 +26,37 @@ public class ExchangeController {
     private final ExchangeFactory exchangeFactory;
     private final ExchangeSymbolRepository symbolRepository;
 
+    @GetMapping("/supported")
+    public ResponseEntity<List<ExchangeSupportResponse>> getSupportedMetadata() {
+        List<ExchangeSupportResponse> metadata = Arrays.stream(ExchangePlatform.values())
+                .filter(platform -> {
+                    try {
+                        return exchangeFactory.getProvider(platform).isSupported();
+                    } catch (Exception e) {
+                        return false;
+                    }
+                })
+                .map(platform -> new ExchangeSupportResponse(
+                        platform.getId(),
+                        platform.name(),
+                        platform.getDisplayName(),
+                        exchangeFactory.getProvider(platform).getSupportedMarketTypes()))
+                .toList();
+
+        return ResponseEntity.ok(metadata);
+    }
+
     @GetMapping
     public ResponseEntity<List<ExchangePlatform>> getSupportedExchanges() {
         List<ExchangePlatform> supported = Arrays.stream(ExchangePlatform.values())
-            .filter(platform -> {
-                try {
-                    return exchangeFactory.getProvider(platform).isSupported();
-                } catch (Exception e) {
-                    return false;
-                }
-            })
-            .toList();
+                .filter(platform -> {
+                    try {
+                        return exchangeFactory.getProvider(platform).isSupported();
+                    } catch (Exception e) {
+                        return false;
+                    }
+                })
+                .toList();
         return ResponseEntity.ok(supported);
     }
 
@@ -48,7 +69,7 @@ public class ExchangeController {
     public ResponseEntity<List<ExchangeSymbol>> getSymbols(
             @PathVariable ExchangePlatform platform,
             @PathVariable MarketType marketType) {
-        
+
         if (!exchangeFactory.getProvider(platform).getSupportedMarketTypes().contains(marketType)) {
             throw new RuntimeException("Market " + marketType + " is not supported on " + platform);
         }

@@ -33,8 +33,8 @@ public class AuthService {
             throw new RuntimeException("Email or password is incorrect");
         }
 
-        String accessToken = jwtUtils.generateAccessToken(user.getEmail());
-        String refreshToken = jwtUtils.generateRefreshToken(user.getEmail());
+        String accessToken = jwtUtils.generateAccessToken(user);
+        String refreshToken = jwtUtils.generateRefreshToken(user);
 
         log.info("AUTH_LOGIN_SUCCESS | User: {}", user.getEmail());
         return new TokenResponse(accessToken, refreshToken, user.getId(), user.getEmail(), user.getFullName());
@@ -52,8 +52,8 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String newAccessToken = jwtUtils.generateAccessToken(email);
-        String newRefreshToken = jwtUtils.generateRefreshToken(email);
+        String newAccessToken = jwtUtils.generateAccessToken(user);
+        String newRefreshToken = jwtUtils.generateRefreshToken(user);
 
         log.info("AUTH_REFRESH_SUCCESS | Tokens rotated for: {}", email);
         return new TokenResponse(newAccessToken, newRefreshToken, user.getId(), user.getEmail(), user.getFullName());

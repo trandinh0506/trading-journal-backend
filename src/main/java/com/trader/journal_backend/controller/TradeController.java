@@ -6,10 +6,12 @@ import com.trader.journal_backend.model.Trade;
 import com.trader.journal_backend.model.UserExchangeConnection;
 import com.trader.journal_backend.repository.TradeRepository;
 import com.trader.journal_backend.repository.UserExchangeConnectionRepository;
+import com.trader.journal_backend.security.UserPrincipal;
 import com.trader.journal_backend.service.TradeService;
 import com.trader.journal_backend.service.TradeSyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,8 +44,8 @@ public class TradeController {
     }
 
     @PostMapping("/sync/{symbol}")
-    public ResponseEntity<String> syncFromExchange(@PathVariable String symbol) {
-        UserExchangeConnection conn = connectionRepository.findByUserIdAndIsActiveTrue(1L).stream()
+    public ResponseEntity<String> syncFromExchange(@PathVariable String symbol, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        UserExchangeConnection conn = connectionRepository.findByUserIdAndIsActiveTrue(userPrincipal.getId()).stream()
                 .filter(c -> c.getMarketType().name().contains("FUTURES"))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No Futures connection found!"));

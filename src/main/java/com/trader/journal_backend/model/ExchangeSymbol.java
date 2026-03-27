@@ -1,15 +1,10 @@
 package com.trader.journal_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.trader.journal_backend.model.enums.ExchangePlatform;
 import com.trader.journal_backend.model.enums.MarketType;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -24,14 +19,25 @@ public class ExchangeSymbol {
     private ExchangePlatform exchange;
 
     @Enumerated(EnumType.STRING)
+    @JsonProperty("market_type")
     private MarketType marketType;
 
     private String code; 
 
+    @JsonProperty("display_name")
     private String displayName;
 
+    @JsonProperty("base_asset")
     private String baseAsset;  
+
+    @JsonProperty("quote_asset")
     private String quoteAsset; 
 
+    @JsonProperty("is_active")
     private boolean isActive = true;
+
+    @JsonProperty("is_active")
+    public boolean isActive() {
+        return isActive;
+    }
 }

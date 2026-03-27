@@ -1,6 +1,7 @@
 package com.trader.journal_backend.controller;
 
 import com.trader.journal_backend.dto.ConnectionResponse;
+import com.trader.journal_backend.dto.UserConnectedMetadata;
 import com.trader.journal_backend.model.UserExchangeConnection;
 import com.trader.journal_backend.security.UserPrincipal;
 import com.trader.journal_backend.service.UserExchangeConnectionService;
@@ -34,5 +35,10 @@ public class ConnectionController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+    @GetMapping("/metadata")
+    public ResponseEntity<List<UserConnectedMetadata>> getConnectedMetadata(
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return ResponseEntity.ok(connectionService.getUserConnectedMetadata(userPrincipal.getId()));
     }
 }

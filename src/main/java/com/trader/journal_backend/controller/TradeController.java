@@ -4,6 +4,8 @@ import com.trader.journal_backend.dto.OrderDTO;
 import com.trader.journal_backend.dto.TradeResponseDTO;
 import com.trader.journal_backend.model.Trade;
 import com.trader.journal_backend.model.UserExchangeConnection;
+import com.trader.journal_backend.model.enums.ExchangePlatform;
+import com.trader.journal_backend.model.enums.MarketType;
 import com.trader.journal_backend.repository.TradeRepository;
 import com.trader.journal_backend.repository.UserExchangeConnectionRepository;
 import com.trader.journal_backend.security.UserPrincipal;
@@ -43,16 +45,24 @@ public class TradeController {
         return ResponseEntity.ok(tradeService.convertToResponseDTO(updatedTrade));
     }
 
-    @PostMapping("/sync/{symbol}")
-    public ResponseEntity<String> syncFromExchange(@PathVariable String symbol, @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        UserExchangeConnection conn = connectionRepository.findByUserIdAndIsActiveTrue(userPrincipal.getId()).stream()
-                .filter(c -> c.getMarketType().name().contains("FUTURES"))
+    @PostMapping("/sync/{platform}/{marketType}/{symbol}")
+    public ResponseEntity<String> syncFromExchange(
+            @PathVariable ExchangePlatform platform,
+            @PathVariable MarketType marketType,
+            @PathVariable String symbol,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+
+        UserExchangeConnection conn = connectionRepository
+                .findByUserIdAndPlatformAndMarketTypeAndIsActiveTrue(
+                    userPrincipal.getId(), platform, marketType)
+                .stream()
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("No Futures connection found!"));
+                .orElseThrow(() -> new RuntimeException(
+                    "Cannot find active API connection for " + platform + " " + marketType));
 
         int count = tradeSyncService.syncAndProcess(conn, symbol);
         
-        return ResponseEntity.ok("Successfully synced " + count + " orders for " + symbol);
+        return ResponseEntity.ok("Synced " + count + " orders for " + symbol);
     }
 
     @GetMapping("/{id}")

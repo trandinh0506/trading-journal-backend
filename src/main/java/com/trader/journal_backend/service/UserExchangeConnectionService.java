@@ -1,14 +1,18 @@
 package com.trader.journal_backend.service;
 
 import com.trader.journal_backend.dto.ConnectionResponse;
+import com.trader.journal_backend.dto.UserConnectedMetadata;
 import com.trader.journal_backend.exchange.ExchangeFactory;
 import com.trader.journal_backend.exchange.ExchangeProvider;
 import com.trader.journal_backend.model.UserExchangeConnection;
+import com.trader.journal_backend.model.enums.ExchangePlatform;
 import com.trader.journal_backend.repository.UserExchangeConnectionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +75,24 @@ public class UserExchangeConnectionService {
                 .toList();
     }
 
+    public List<UserConnectedMetadata> getUserConnectedMetadata(Long userId) {
+        List<UserExchangeConnection> connections = connectionRepository.findByUserIdAndIsActiveTrue(userId);
+
+        Map<ExchangePlatform, List<UserExchangeConnection>> grouped = connections.stream()
+                .collect(Collectors.groupingBy(UserExchangeConnection::getPlatform));
+
+        return grouped.entrySet().stream()
+                .map(entry -> UserConnectedMetadata.builder()
+                        .platform(entry.getKey().name())
+                        .markets(entry.getValue().stream()
+                                .map(conn -> new UserConnectedMetadata.ConnectedMarket(
+                                        conn.getId(), 
+                                        conn.getMarketType().name()))
+                                .toList())
+                        .build())
+                .toList();
+    }
+    
     public String maskApiKey(String apiKey) {
         if (apiKey == null || apiKey.length() < 8) {
             return "****";

@@ -15,6 +15,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.trader.journal_backend.security.JwtAuthenticationEntryPoint;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -24,6 +26,8 @@ public class SecurityConfig {
 
     @Value("${app.cors.allowed-origins:*}")
     private String[] allowedOrigins;
+
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -35,6 +39,7 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()

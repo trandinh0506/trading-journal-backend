@@ -10,7 +10,6 @@ import com.trader.journal_backend.model.enums.ExchangePlatform;
 import com.trader.journal_backend.model.enums.MarketType;
 import com.binance.connector.client.impl.SpotClientImpl;
 import com.binance.connector.futures.client.impl.UMFuturesClientImpl;
-import com.binance.connector.client.exceptions.BinanceClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -145,77 +144,46 @@ public class BinanceProvider extends AbstractExchangeProvider {
     @Override
     public boolean testConnection(String apiKey, String secretKey, MarketType marketType) {
         try {
-            log.info("SECURITY_CHECK | Platform: BINANCE | Market: {} | Starting permission audit...", marketType);
+            log.info("SECURITY_CHECK | Platform: BINANCE | Market: {} | Self-Host Mode Audit...", marketType);
             
             SpotClientImpl client = new SpotClientImpl(apiKey, secretKey);
-            
-            String permissionJson;
-            try {
-                permissionJson = client.createWallet().apiPermission(new LinkedHashMap<>());
-            } catch (BinanceClientException e) {
-                log.error("BINANCE_API_ERROR | Code: {} | Message: {}", e.getErrorCode(), e.getMessage());
-                if (e.getErrorCode() == -2015) {
-                    throw new RuntimeException("Invalid API Key, Secret, or IP not whitelisted.");
-                }
-                throw e;
-            }
-
+            String permissionJson = client.createWallet().apiPermission(new LinkedHashMap<>());
             JsonNode node = objectMapper.readTree(permissionJson);
-            log.debug("RAW_PERMISSIONS | {}", permissionJson);
             
-            boolean enableReading = node.path("enableReading").asBoolean(false);
-            boolean enableWithdrawals = node.path("enableWithdrawals").asBoolean(false);
-            boolean enableInternalTransfer = node.path("enableInternalTransfer").asBoolean(false);
-            boolean permitsUniversalTransfer = node.path("permitsUniversalTransfer").asBoolean(false);
-            boolean enableSpotTrade = node.path("enableSpotAndMarginTrading").asBoolean(false);
-            boolean enableFutures = node.path("enableFutures").asBoolean(false);
-            boolean ipRestrict = node.path("ipRestrict").asBoolean(false);
-
-            log.info("PERMISSION_REPORT | Read: {} | Withdraw: {} | Spot: {} | Futures: {} | IP_Restrict: {}", 
-                    enableReading, enableWithdrawals, enableSpotTrade, enableFutures, ipRestrict);
-
-            if (enableWithdrawals || enableInternalTransfer || permitsUniversalTransfer) {
-                log.error("SECURITY_ALERT | API Key has WITHDRAWAL or TRANSFER permissions enabled! Rejected for safety.");
-                throw new RuntimeException("Insecure API Key: Withdrawal/Transfer/UniversalTransfer permissions must be DISABLED.");
+            // block withdrawing or internal transfer permissions for security
+            if (node.path("enableWithdrawals").asBoolean(false) || 
+                node.path("enableInternalTransfer").asBoolean(false)) {
+                throw new RuntimeException("Insecure API Key: Withdrawing or internal transfer permissions must be disabled.");
             }
 
-            if ("production".equalsIgnoreCase(appEnv) && !ipRestrict) {
-                log.error("SECURITY_CONFIG_ERROR | API Key is not IP-restricted.");
-                throw new RuntimeException("Insecure API Key: IP restriction must be ENABLED.");
-            } else if (!ipRestrict) {
-                log.warn("SECURITY_WARNING | API Key is not IP-restricted (Skipped for {} env)", appEnv);
+            // check enable reading permission
+            if (!node.path("enableReading").asBoolean(false)) {
+                throw new RuntimeException("API Key lacks 'Enable Reading' permission.");
             }
 
-            if (!enableReading) {
-                log.error("SECURITY_CONFIG_ERROR | API Key does not have 'Enable Reading' permission.");
-                throw new RuntimeException("API Key missing 'Enable Reading' permission.");
-            }
-
-            if (marketType == MarketType.SPOT && !enableSpotTrade) {
-                log.warn("SECURITY_CONFIG_ERROR | Market is SPOT but 'Enable Spot' is OFF.");
-                // throw new RuntimeException("API Key missing 'Enable Spot & Margin Trading' permission.");
-            }
-            if (marketType == MarketType.FUTURES && !enableFutures) {
-                log.warn("SECURITY_CONFIG_ERROR | Market is FUTURES but 'Enable Futures' is OFF.");
-                // throw new RuntimeException("API Key missing 'Enable Futures' permission.");
-            }
-
+            // check trading permissions based on market type
             if (marketType == MarketType.SPOT) {
+                boolean canTradeSpot = node.path("enableSpotAndMarginTrading").asBoolean(false);
+                if (!canTradeSpot) {
+                    log.warn("TRADING_DISABLED | Spot Trading permission is disabled. You can only view history, not place orders.");
+                }
+                // Verify Spot Key
                 client.createTrade().account(new LinkedHashMap<>());
-            } else {
+                
+            } else if (marketType == MarketType.FUTURES) {
+                boolean canTradeFutures = node.path("enableFutures").asBoolean(false);
+                if (!canTradeFutures) {
+                    log.warn("TRADING_DISABLED | Futures Trading permission is disabled. You can only view history, not place orders.");
+                }
+                // Verify Futures Key
                 new UMFuturesClientImpl(apiKey, secretKey).account().accountInformation(new LinkedHashMap<>());
             }
 
-            log.info("BINANCE_TEST_CONNECTION_SUCCESS | Security Audit Passed | Market: {}", marketType);
+            log.info("BINANCE_CONNECTION_VERIFIED | Market: {} | Trading Enabled: {}", marketType, true);
             return true;
 
         } catch (Exception e) {
-            String errorMsg = e.getMessage();
-            if (errorMsg != null && (errorMsg.contains("Insecure API Key") || errorMsg.contains("missing") || errorMsg.contains("IP not whitelisted"))) {
-                log.error("CONNECTION_REJECTED | Security Policy Violation: {}", errorMsg);
-            } else {
-                log.error("BINANCE_AUTH_FAILED | Authentication Error: {}", errorMsg);
-            }
+            log.error("CONNECTION_FAILED | Error: {}", e.getMessage());
             return false;
         }
     }

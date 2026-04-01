@@ -37,8 +37,8 @@ public class TradeController {
     }
 
     @PostMapping("/order")
-    public ResponseEntity<TradeResponseDTO> processOrder(@RequestBody OrderDTO orderDTO) {
-        Trade updatedTrade = tradeService.processNewOrder(orderDTO);
+    public ResponseEntity<TradeResponseDTO> processOrder(@RequestBody OrderDTO orderDTO, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        Trade updatedTrade = tradeService.processNewOrder(orderDTO, userPrincipal.getId());
         if (updatedTrade == null) {
             return ResponseEntity.noContent().build();
         }

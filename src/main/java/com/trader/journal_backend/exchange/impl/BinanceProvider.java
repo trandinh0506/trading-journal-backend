@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,24 +81,56 @@ public class BinanceProvider extends AbstractExchangeProvider {
 
     @Override
     public List<OrderDTO> fetchTradeHistory(String apiKey, String secretKey, String symbol, MarketType marketType, Long startTime) {
-        log.debug("FETCH_HISTORY | Symbol: {} | Market: {} | From: {}", symbol, marketType, startTime);
+        log.info("FETCH_HISTORY | Symbol: {} | Market: {} | StartTime: {}", symbol, marketType, startTime);
         
+        List<OrderDTO> allOrders = new ArrayList<>();
+        long now = System.currentTimeMillis();
+        long windowMillis = 7 * 24 * 60 * 60 * 1000L; // 7 days for each batch
+        
+        // If startTime is null, we want to fetch the most recent 7 days of history, so we set currentStart to now - windowMillis
+        long currentStart = (startTime != null) ? (startTime + 1) : (now - windowMillis);
+        log.info("CurrentStart: {} | Now: {} | CurrentStart - Now: {}", currentStart, now, currentStart - now);
         try {
-            Map<String, Object> parameters = new LinkedHashMap<>();
-            parameters.put("symbol", symbol);
-            if (startTime != null) parameters.put("startTime", startTime + 1);
+            while (currentStart < now) {
+                // Each batch will cover a window of time defined by windowMillis
+                long currentEnd = Math.min(currentStart + windowMillis, now);
+                
+                Map<String, Object> parameters = new LinkedHashMap<>();
+                parameters.put("symbol", symbol);
+                parameters.put("startTime", currentStart);
+                parameters.put("endTime", currentEnd);
+                parameters.put("limit", 1000);
 
-            String response;
-            if (marketType == MarketType.SPOT) {
-                response = new SpotClientImpl(apiKey, secretKey).createTrade().myTrades(parameters);
-            } else {
-                response = new UMFuturesClientImpl(apiKey, secretKey).account().accountTradeList(new LinkedHashMap<>(parameters));
+                String response;
+                if (marketType == MarketType.SPOT) {
+                    response = new SpotClientImpl(apiKey, secretKey).createTrade().myTrades(new LinkedHashMap<>(parameters));
+                } else {
+                    // Futures API: userTrades/accountTradeList
+                    response = new UMFuturesClientImpl(apiKey, secretKey).account().accountTradeList(new LinkedHashMap<>(parameters));
+                }
+
+                List<Map<String, Object>> batch = objectMapper.readValue(response, new TypeReference<>() {});
+                
+                if (!batch.isEmpty()) {
+                    List<OrderDTO> batchOrders = batch.stream()
+                            .map(t -> mapToOrderDTO(t, symbol, marketType))
+                            .collect(Collectors.toList());
+                    allOrders.addAll(batchOrders);
+
+                    // Take the timestamp of the last trade in this batch to set the next start time, adding 1ms to avoid overlap
+                    long lastTradeTime = (long) batch.get(batch.size() - 1).get("time");
+                    currentStart = lastTradeTime + 1;
+                } else {
+                    // If this batch has no trades, jump the time window to currentEnd
+                    currentStart = currentEnd + 1;
+                }
+
+                // Avoid spamming too quickly and getting IP banned by Binance (Rate Limit)
+                if (currentStart < now) Thread.sleep(150); 
             }
 
-            List<Map<String, Object>> rawTrades = objectMapper.readValue(response, new TypeReference<>() {});
-            return rawTrades.stream()
-                    .map(t -> mapToOrderDTO(t, symbol, marketType))
-                    .collect(Collectors.toList());
+            log.info("FETCH_HISTORY_SUCCESS | Symbol: {} | Total Fetched: {}", symbol, allOrders.size());
+            return allOrders;
 
         } catch (Exception e) {
             log.error("FETCH_HISTORY_FAILED | Symbol: {} | Error: {}", symbol, e.getMessage());
@@ -125,7 +156,7 @@ public class BinanceProvider extends AbstractExchangeProvider {
             dto.setCommissionAsset(t.get("commissionAsset").toString());
             
             long ts = (long) t.get("time");
-            dto.setExecutedAt(LocalDateTime.ofInstant(Instant.ofEpochMilli(ts), ZoneId.systemDefault()));
+            dto.setExecutedAt(LocalDateTime.ofInstant(Instant.ofEpochMilli(ts), java.time.ZoneOffset.UTC));
             
             dto.setExternalOrderId(t.get("id").toString());
             

@@ -29,35 +29,40 @@ public class TradeService {
     private final ImageService imageService;
 
     @Transactional
-    public Trade processNewOrder(OrderDTO dto) {
-        log.debug("PROCESS_ORDER | Symbol: {} | Side: {} | Price: {} | Qty: {}", 
-              dto.getSymbol(), dto.getSide(), dto.getPrice(), dto.getVolume());
+    public Trade processNewOrder(OrderDTO dto, Long userId) {
+        log.debug("PROCESS_ORDER | Symbol: {} | Side: {} | Price: {} | Qty: {}",
+                dto.getSymbol(), dto.getSide(), dto.getPrice(), dto.getVolume());
 
         // Check for duplicate orders using External Order ID
         if (dto.getExternalOrderId() != null && orderRepository.existsByExternalOrderId(dto.getExternalOrderId())) {
             log.info("ORDER_SKIP | Duplicate detected: {}", dto.getExternalOrderId());
-            return null; 
+            return null;
         }
 
         // Find an opposite OPEN trade to close/reduce position first
         // If current order is BUY, look for an OPEN SELL trade, and vice versa.
         String oppositeSide = dto.getSide().equalsIgnoreCase("BUY") ? "SELL" : "BUY";
-        Optional<Trade> existingTrade = tradeRepository.findBySymbolAndSideAndStatus(dto.getSymbol(), oppositeSide, "OPEN");
-        
+        Optional<Trade> existingTrade = tradeRepository
+                .findByUserIdAndSymbolAndSideAndStatus(userId, dto.getSymbol(), oppositeSide, "OPEN");
+
         Trade trade;
         if (existingTrade.isPresent()) {
             trade = existingTrade.get();
-            log.info("TRADE_CLOSE_ACTION | Found opposite open trade ID: {} for {} {}", 
-                     trade.getId(), dto.getSide(), dto.getSymbol());
+            log.info("TRADE_CLOSE_ACTION | Found opposite open trade ID: {} for {} {}",
+                    trade.getId(), dto.getSide(), dto.getSymbol());
         } else {
-            // If no opposite trade, find or create a trade with the SAME side (DCA/New Position)
-            trade = tradeRepository.findBySymbolAndSideAndStatus(dto.getSymbol(), dto.getSide(), "OPEN")
+            // If no opposite trade, find or create a trade with the SAME side (DCA/New
+            // Position)
+            trade = tradeRepository
+                    .findByUserIdAndSymbolAndSideAndStatus(userId, dto.getSymbol(), dto.getSide(), "OPEN")
                     .orElseGet(() -> {
-                        log.info("TRADE_CREATE | No open position found. Creating new Trade for {} {}", dto.getSide(), dto.getSymbol());
+                        log.info("TRADE_CREATE | No open position found. Creating new Trade for {} {}", dto.getSide(),
+                                dto.getSymbol());
                         Trade newTrade = new Trade();
                         newTrade.setSymbol(dto.getSymbol());
                         newTrade.setSide(dto.getSide());
                         newTrade.setStatus("OPEN");
+                        newTrade.setUserId(userId);
                         return tradeRepository.saveAndFlush(newTrade);
                     });
         }
@@ -70,7 +75,7 @@ public class TradeService {
         order.setPrice(dto.getPrice());
         order.setVolume(dto.getVolume());
         order.setRealizedPnl(dto.getRealizedPnl());
-        order.setFee(dto.getCommission()); 
+        order.setFee(dto.getCommission());
         order.setFeeAsset(dto.getCommissionAsset());
         order.setSl(dto.getSl());
         order.setTp(dto.getTp());
@@ -80,29 +85,30 @@ public class TradeService {
 
         // Re-calculate Trade summary (Average Price, Net Volume, Status)
         updateTradeSummary(trade);
-        
-        log.info("TRADE_UPDATED | ID: {} | Status: {} | TotalVol: {}", 
-             trade.getId(), trade.getStatus(), trade.getTotalVolume());
-        
+
+        log.info("TRADE_UPDATED | ID: {} | Status: {} | TotalVol: {}",
+                trade.getId(), trade.getStatus(), trade.getTotalVolume());
+
         return tradeRepository.save(trade);
     }
 
     public void updateTradeSummary(Trade trade) {
         List<Order> orders = orderRepository.findByTradeId(trade.getId());
-        if (orders.isEmpty()) return;
+        if (orders.isEmpty())
+            return;
 
         orders.sort(Comparator.comparing(Order::getExecutedAt));
 
-        BigDecimal currentVol = BigDecimal.ZERO;     
-        BigDecimal totalExecuted = BigDecimal.ZERO;  
-        BigDecimal entryVol = BigDecimal.ZERO;       
-        BigDecimal entryValue = BigDecimal.ZERO;     
+        BigDecimal currentVol = BigDecimal.ZERO;
+        BigDecimal totalExecuted = BigDecimal.ZERO;
+        BigDecimal entryVol = BigDecimal.ZERO;
+        BigDecimal entryValue = BigDecimal.ZERO;
         BigDecimal totalPnL = BigDecimal.ZERO;
 
         for (Order o : orders) {
             BigDecimal vol = o.getVolume();
             totalExecuted = totalExecuted.add(vol);
-            
+
             if (o.getRealizedPnl() != null) {
                 totalPnL = totalPnL.add(o.getRealizedPnl());
             }
@@ -129,12 +135,13 @@ public class TradeService {
         if (currentVol.abs().compareTo(new BigDecimal("0.00000001")) <= 0) {
             trade.setStatus("CLOSED");
             trade.setClosedAt(orders.get(orders.size() - 1).getExecutedAt());
-            trade.setTotalVolume(BigDecimal.ZERO); 
+            trade.setTotalVolume(BigDecimal.ZERO);
         } else {
             trade.setStatus("OPEN");
             trade.setClosedAt(null);
         }
     }
+
     public TradeResponseDTO convertToResponseDTO(Trade trade) {
         TradeResponseDTO dto = new TradeResponseDTO();
         dto.setId(trade.getId());
@@ -168,11 +175,10 @@ public class TradeService {
 
         if (trade.getImages() != null && !trade.getImages().isEmpty()) {
             List<TradeImageResponseDTO> imageDTOs = trade.getImages().stream()
-                .map(img -> new TradeImageResponseDTO(
-                    img.getFileType(), 
-                    imageService.generatePresignedUrl(img.getFileName())
-                ))
-                .collect(Collectors.toList());
+                    .map(img -> new TradeImageResponseDTO(
+                            img.getFileType(),
+                            imageService.generatePresignedUrl(img.getFileName())))
+                    .collect(Collectors.toList());
             dto.setImages(imageDTOs);
         }
 
@@ -180,7 +186,8 @@ public class TradeService {
     }
 
     private String format(BigDecimal value) {
-        if (value == null) return "0";
+        if (value == null)
+            return "0";
         return value.stripTrailingZeros().toPlainString();
     }
 }

@@ -7,5 +7,7 @@ import java.util.Optional;
 
 @Repository
 public interface TradeRepository extends JpaRepository<Trade, Long> {
-    Optional<Trade> findBySymbolAndSideAndStatus(String symbol, String side, String status);
+    Optional<Trade> findByUserIdAndSymbolAndSideAndStatus(Long userId, String symbol, String side, String status);
+    Optional<Trade> findFirstByUserIdAndSymbolAndStatusOrderByOpenedAtAsc(Long userId, String symbol, String status);
+    Optional<Trade> findFirstByUserIdAndSymbolOrderByOpenedAtDesc(Long userId, String symbol);
 }

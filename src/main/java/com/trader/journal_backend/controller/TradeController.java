@@ -2,6 +2,7 @@ package com.trader.journal_backend.controller;
 
 import com.trader.journal_backend.dto.OrderDTO;
 import com.trader.journal_backend.dto.TradeResponseDTO;
+import com.trader.journal_backend.dto.TradeStatsDTO;
 import com.trader.journal_backend.model.Trade;
 import com.trader.journal_backend.model.UserExchangeConnection;
 import com.trader.journal_backend.model.enums.ExchangePlatform;
@@ -10,6 +11,7 @@ import com.trader.journal_backend.repository.TradeRepository;
 import com.trader.journal_backend.repository.UserExchangeConnectionRepository;
 import com.trader.journal_backend.security.UserPrincipal;
 import com.trader.journal_backend.service.TradeService;
+import com.trader.journal_backend.service.TradeStatsService;
 import com.trader.journal_backend.service.TradeSyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ public class TradeController {
     private final TradeSyncService tradeSyncService;
     private final TradeRepository tradeRepository;
     private final UserExchangeConnectionRepository connectionRepository;
+    private final TradeStatsService statsService;
 
     @GetMapping
     public List<TradeResponseDTO> getAllTrades() {
@@ -37,7 +40,8 @@ public class TradeController {
     }
 
     @PostMapping("/order")
-    public ResponseEntity<TradeResponseDTO> processOrder(@RequestBody OrderDTO orderDTO, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseEntity<TradeResponseDTO> processOrder(@RequestBody OrderDTO orderDTO,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         Trade updatedTrade = tradeService.processNewOrder(orderDTO, userPrincipal.getId());
         if (updatedTrade == null) {
             return ResponseEntity.noContent().build();
@@ -54,14 +58,14 @@ public class TradeController {
 
         UserExchangeConnection conn = connectionRepository
                 .findByUserIdAndPlatformAndMarketTypeAndIsActiveTrue(
-                    userPrincipal.getId(), platform, marketType)
+                        userPrincipal.getId(), platform, marketType)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException(
-                    "Cannot find active API connection for " + platform + " " + marketType));
+                        "Cannot find active API connection for " + platform + " " + marketType));
 
         int count = tradeSyncService.syncAndProcess(conn, symbol);
-        
+
         return ResponseEntity.ok("Synced " + count + " orders for " + symbol);
     }
 
@@ -78,5 +82,15 @@ public class TradeController {
         allTrades.forEach(tradeService::updateTradeSummary);
         tradeRepository.saveAll(allTrades);
         return ResponseEntity.ok("Recalculated " + allTrades.size() + " trades.");
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<TradeStatsDTO> getStats(
+            @AuthenticationPrincipal UserPrincipal user,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer quarter,
+            @RequestParam(required = false) Integer year) {
+
+        return ResponseEntity.ok(statsService.getStats(user.getId(), month, quarter, year));
     }
 }

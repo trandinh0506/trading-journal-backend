@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,4 +38,12 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     Map<String, Object> getRawStats(@Param("userId") Long userId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+            
+
+    @Query("""
+                SELECT t FROM Trade t
+                WHERE t.userId = :userId AND t.status = 'CLOSED'
+                ORDER BY t.closedAt ASC
+            """)
+    List<Trade> findAllClosedTrades(@Param("userId") Long userId);
 }

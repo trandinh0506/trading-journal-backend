@@ -2,12 +2,16 @@ package com.trader.journal_backend.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.trader.journal_backend.dto.EquityPointDTO;
 import com.trader.journal_backend.dto.TradeStatsDTO;
+import com.trader.journal_backend.model.Trade;
 import com.trader.journal_backend.repository.TradeRepository;
 
 @Service
@@ -45,6 +49,29 @@ public class TradeStatsService {
                 totalPnl.subtract(totalFee),
                 ((Number) res.get("avg_win")).doubleValue(),
                 ((Number) res.get("avg_loss")).doubleValue());
+    }
+
+    public List<EquityPointDTO> getEquityCurve(Long userId) {
+        List<Trade> trades = tradeRepository.findAllClosedTrades(userId);
+        List<EquityPointDTO> equityCurve = new ArrayList<>();
+        
+        BigDecimal cumulative = BigDecimal.ZERO;
+
+        for (Trade t : trades) {
+            BigDecimal totalFee = t.getOrders().stream()
+                    .map(order -> order.getFee() != null ? order.getFee() : BigDecimal.ZERO)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+            BigDecimal netPnl = t.getTotalRealizedPnl().subtract(totalFee);
+            cumulative = cumulative.add(netPnl);
+
+            equityCurve.add(new EquityPointDTO(
+                t.getClosedAt(),
+                netPnl.stripTrailingZeros(),
+                cumulative.stripTrailingZeros()
+            ));
+        }
+        return equityCurve;
     }
 
 }

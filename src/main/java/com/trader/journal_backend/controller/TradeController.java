@@ -1,5 +1,6 @@
 package com.trader.journal_backend.controller;
 
+import com.trader.journal_backend.dto.EquityPointDTO;
 import com.trader.journal_backend.dto.OrderDTO;
 import com.trader.journal_backend.dto.TradeResponseDTO;
 import com.trader.journal_backend.dto.TradeStatsDTO;
@@ -92,5 +93,9 @@ public class TradeController {
             @RequestParam(required = false) Integer year) {
 
         return ResponseEntity.ok(statsService.getStats(user.getId(), month, quarter, year));
+    }
+    @GetMapping("/equity-points")
+    public ResponseEntity<List<EquityPointDTO>> getEquityPoints(@AuthenticationPrincipal UserPrincipal user) {
+        return ResponseEntity.ok(statsService.getEquityCurve(user.getId()));
     }
 }
